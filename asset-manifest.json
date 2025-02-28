@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/fetch-dog-app/static/css/main.d20a1a16.css",
-    "main.js": "/fetch-dog-app/static/js/main.293e6189.js",
+    "main.js": "/fetch-dog-app/static/js/main.88d48f51.js",
     "static/media/Daikichi_pug.jpg": "/fetch-dog-app/static/media/Daikichi_pug.96b53b6e027376d79ab9.jpg",
     "index.html": "/fetch-dog-app/index.html",
     "main.d20a1a16.css.map": "/fetch-dog-app/static/css/main.d20a1a16.css.map",
-    "main.293e6189.js.map": "/fetch-dog-app/static/js/main.293e6189.js.map"
+    "main.88d48f51.js.map": "/fetch-dog-app/static/js/main.88d48f51.js.map"
   },
   "entrypoints": [
     "static/css/main.d20a1a16.css",
-    "static/js/main.293e6189.js"
+    "static/js/main.88d48f51.js"
   ]
 }
