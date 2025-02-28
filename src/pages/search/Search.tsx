@@ -36,7 +36,7 @@ const Search = () => {
     fetchDogBreeds();
   }, []);
 
-  const fetchDogs = (async (key?: string, value?: string) => {
+  const fetchDogs = async (key?: string, value?: string) => {
     try {
       let searchData;
       let searchParameters = "";
@@ -48,10 +48,10 @@ const Search = () => {
           setDogs(null);
         }
       } else if (key === "breed") {
-        if (value && searchQuery.value) {
-          value = value || searchQuery.value;
-          searchParameters = `&breeds=${encodeURIComponent(value)}`;
-          setSearchQuery({ key, value });
+        const searchValue = value || searchQuery.value;
+        if (searchValue) {
+          searchParameters = `&breeds=${encodeURIComponent(searchValue)}`;
+          setSearchQuery({ key, value: searchValue });
         }
         const response = await fetch(
           `https://frontend-take-home-service.fetch.com/dogs/search?size=50&sort=breed:asc${searchParameters}`,
@@ -83,7 +83,7 @@ const Search = () => {
     } catch (error) {
       console.error("Error fetching dogs:", error);
     }
-  })
+  };
 
   useEffect(() => {
     fetchDogs("breed");

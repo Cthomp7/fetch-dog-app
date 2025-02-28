@@ -78,7 +78,7 @@ const SearchBar = <T,>({
         }}
       >
         <img
-          src="/svg/search.svg"
+          src="/fetch-dog-app/svg/search.svg"
           alt="Search"
           style={{
             width: "30px",
@@ -119,7 +119,11 @@ const SearchBar = <T,>({
         onClick={handleOnFavoriteClick}
       >
         <img
-          src={favoritesMode ? "/svg/heart.svg" : "/svg/heart-filled.svg"}
+          src={
+            favoritesMode
+              ? "/fetch-dog-app/svg/heart.svg"
+              : "/fetch-dog-app/svg/heart-filled.svg"
+          }
           alt="heart"
           className={styles.heart}
         />{" "}

@@ -38,7 +38,7 @@ const DogCard: React.FC<DogCardProps> = ({ dog, favorite, onFavorite }) => {
             <p className={styles.info}>{getAgeText(age)} old</p>
             <div className={styles.zipContainer}>
               <img
-                src="/svg/map-pin.svg"
+                src="/fetch-dog-app/svg/map-pin.svg"
                 alt="map pin"
                 className={styles.mapPin}
               />
@@ -48,13 +48,13 @@ const DogCard: React.FC<DogCardProps> = ({ dog, favorite, onFavorite }) => {
         </div>
         {favorited ? (
           <img
-            src="/svg/heart-filled.svg"
+            src="/fetch-dog-app/svg/heart-filled.svg"
             alt="heart"
             className={styles.heart}
             style={{ opacity: 1 }}
           />
         ) : (
-          <img src="/svg/heart.svg" alt="heart" className={styles.heart} />
+          <img src="/fetch-dog-app/svg/heart.svg" alt="heart" className={styles.heart} />
         )}
       </div>
     </button>
