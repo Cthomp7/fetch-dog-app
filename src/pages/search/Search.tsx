@@ -97,6 +97,8 @@ const Search = () => {
         setKeycount(total);
       }
 
+      setMode(key || "breed");
+
       if (searchData && searchData.length > 0) {
         const postResponse = await fetch(
           "https://frontend-take-home-service.fetch.com/dogs",
@@ -112,7 +114,6 @@ const Search = () => {
 
         const postData = await postResponse.json();
         setDogs(postData);
-        setMode(key || "breed");
       }
     } catch (error) {
       console.error("Error fetching dogs:", error);
