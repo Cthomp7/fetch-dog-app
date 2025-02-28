@@ -84,9 +84,11 @@ const Search = () => {
         }
       } else if (key === "breed") {
         const searchValue = value || searchQuery.value;
-        if (searchValue) {
+        if (searchValue && value !== "all") {
           searchParameters = `&breeds=${encodeURIComponent(searchValue)}`;
           setSearchQuery({ key, value: searchValue });
+        } else {
+          setSearchQuery({ key, value: "" });
         }
         const response = await fetch(
           `https://frontend-take-home-service.fetch.com/dogs/search?size=${itemsPerPage}&sort=breed:${order}${searchParameters}&from=${from}`,
@@ -203,6 +205,7 @@ const Search = () => {
         onMatch={findYourMatch}
         favorites={favoriteDogs.length}
         mode={mode}
+        currentBreed={searchQuery.value}
       />
       {mode !== "match" && dogs && (
         <Pagination

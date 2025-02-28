@@ -9,6 +9,9 @@
 .imgContainer {
   display: flex;
   align-items: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .searchIcon {
@@ -120,6 +123,11 @@
   border: none;
   padding: 6px;
   width: 43px;
+}
+
+.arrowBubbleDisabled {
+  cursor: not-allowed;
+  background-color: #dddee5;
 }
 
 .arrowIcon {

@@ -12,6 +12,7 @@ interface SearchBarProps<T> {
   onMatch: () => void;
   favorites: number;
   mode: string;
+  currentBreed: string | null;
 }
 
 const SearchBar = <T,>({
@@ -23,6 +24,7 @@ const SearchBar = <T,>({
   fuseOptions,
   favorites,
   mode,
+  currentBreed,
 }: SearchBarProps<T>) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<FuseResult<T>[] | null>(
@@ -109,6 +111,25 @@ const SearchBar = <T,>({
     }
   };
 
+  // Handle Enter key press
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      if (searchResult && searchResult.length > 0) {
+        // Select the first search result when Enter is pressed
+        handleOptionClick({
+          key: "breed",
+          value: String(searchResult[0].item),
+        });
+        setShowResults(false);
+      } else {
+        handleOptionClick({
+          key: "breed",
+          value: "all",
+        });
+      }
+    }
+  };
+
   // Display search results if search bar is focused
   const handleFocus = () => {
     if (searchResult) {
@@ -154,19 +175,23 @@ const SearchBar = <T,>({
 
   return (
     <div className={styles.container}>
-      <div className={styles.imgContainer}>
+      <button
+        className={styles.imgContainer}
+        onClick={() => handleOptionClick({ key: "breed", value: "all" })}
+      >
         <img
           src="/fetch-dog-app/svg/search.svg"
           alt="Search"
           className={styles.searchIcon}
         />
-      </div>
+      </button>
       <div className={styles.searchBarContainer} ref={searchContainerRef}>
         <input
           type="text"
           value={searchQuery}
           onChange={handleSearch}
           onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
           placeholder="Search by breed..."
           className={styles.searchBar}
         />
@@ -192,8 +217,17 @@ const SearchBar = <T,>({
         )}
       </div>
       {mode === "breed" && (
-        <button className={styles.arrowBubble} onClick={handleOnClickOrder}>
-          {order === "asc" ? (
+        <button
+          className={`${styles.arrowBubble} ${
+            currentBreed && currentBreed !== "all"
+              ? styles.arrowBubbleDisabled
+              : ""
+          } `}
+          onClick={() => {
+            if (!currentBreed) handleOnClickOrder();
+          }}
+        >
+          {order === "asc" || (mode === "breed" && currentBreed) ? (
             <img
               src="/fetch-dog-app/svg/a-arrow-up.svg"
               alt="arrow"
