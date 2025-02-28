@@ -14,6 +14,7 @@ interface FetchDogsProps {
   key?: string | null;
   value?: string | null;
   from?: number;
+  page?: number;
   order?: string;
 }
 
@@ -59,7 +60,8 @@ const Search = () => {
   const fetchDogs = async ({
     key = "breed",
     value,
-    from = 1,
+    from = 0,
+    page,
     order,
   }: FetchDogsProps) => {
     try {
@@ -72,7 +74,9 @@ const Search = () => {
         setKeycount(1);
       } else if (key === "favorites") {
         if (favoriteDogs.length > 0) {
-          searchData = favoriteDogs;
+          const start = ((page || currentPage) - 1) * itemsPerPage;
+          const end = start + itemsPerPage;
+          searchData = favoriteDogs.slice(start, end);
           setKeycount(favoriteDogs.length);
         } else {
           setDogs(null);
@@ -153,7 +157,7 @@ const Search = () => {
   // Fetch new dogs when page number is changed
   const handlePageChange = (newPage: number) => {
     const from = calculateFrom(newPage);
-    fetchDogs({ key: mode, from });
+    fetchDogs({ key: mode, from, page: newPage });
     setCurrentPage(newPage);
   };
 

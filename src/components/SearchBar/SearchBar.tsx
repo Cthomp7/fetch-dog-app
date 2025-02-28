@@ -41,7 +41,6 @@ const SearchBar = <T,>({
     if (data) {
       const defaultOptions = {
         includeScore: true,
-        threshold: 0.3,
       };
       setFuseInstance(new Fuse(data, defaultOptions));
     }
