@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DogCard from "../../components/DogCard/DogCard.tsx";
 import SearchBar from "../../components/SearchBar/SearchBar.tsx";
-import { Dog } from "../../types/types";
+import { Dog, Selection } from "../../types/types";
 import styles from "./Search.module.css";
 import Pagination from "../../components/Pagination/Pagination.tsx";
 
@@ -130,8 +130,9 @@ const Search = () => {
   }, []);
 
   // Handle when a search selection is made
-  const handleSearchSelection = (key?: string, value?: string) => {
-    fetchDogs({ key, value });
+  const handleSearchSelection = ({ key, value, page }: Selection) => {
+    if (page) setCurrentPage(page);
+    fetchDogs({ key, value, page });
   };
 
   // Handle favoriting dog card
@@ -203,7 +204,7 @@ const Search = () => {
         favorites={favoriteDogs.length}
         mode={mode}
       />
-      {mode !== "match" && dogs && dogs.length > 1 && (
+      {mode !== "match" && dogs && (
         <Pagination
           keycount={keycount}
           page={currentPage}

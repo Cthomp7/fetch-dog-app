@@ -6,3 +6,9 @@ export interface Dog {
   img: string;
   zip_code: string;
 } 
+
+export interface Selection {
+  key?: string;
+  value?: string;
+  page?: number;
+}

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import Fuse, { FuseResult, IFuseOptions } from "fuse.js";
+import { Selection } from "../../types/types";
 import styles from "./SearchBar.module.css";
 
 interface SearchBarProps<T> {
   data: T[] | null;
   searchKeys?: string[] | null;
   fuseOptions?: IFuseOptions<T>;
-  onSearchSelection: (key?: string, value?: string) => void;
+  onSearchSelection: (props: Selection) => void;
   onOrderChange: (order: string) => void;
   onMatch: () => void;
   favorites: number;
@@ -116,11 +117,11 @@ const SearchBar = <T,>({
   };
 
   // Handle search bar option being selected
-  const handleOptionClick = (key?: string, value?: string) => {
+  const handleOptionClick = ({ key, value, page }: Selection) => {
     key = key || "breed";
     setSearchQuery("");
     setSearchResult(null);
-    onSearchSelection(key, value);
+    onSearchSelection({ key, value, page });
 
     if (favoritesMode) {
       setFavoritesMode(!favoritesMode);
@@ -129,12 +130,12 @@ const SearchBar = <T,>({
 
   // Handle "Favorites" button onClick action
   const handleOnClickFavorite = () => {
-    const active = !favoritesMode
+    const active = !favoritesMode;
     setFavoritesMode(active);
     if (active) {
-      handleOptionClick("favorites");
+      handleOptionClick({ key: "favorites", page: 1 });
     } else {
-      handleOptionClick();
+      handleOptionClick({});
     }
   };
 
@@ -177,7 +178,10 @@ const SearchBar = <T,>({
                   key={String(result.item)}
                   className={styles.searchResult}
                   onClick={() =>
-                    handleOptionClick("breed", String(result.item))
+                    handleOptionClick({
+                      key: "breed",
+                      value: String(result.item),
+                    })
                   }
                 >
                   {String(result.item)}
