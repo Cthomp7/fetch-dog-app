@@ -1,18 +1,48 @@
+/**
+ * Search Page Component
+ *
+ * This page provides a searchable interface for browsing and managing dog listings.
+ * Key features include:
+ * - Dynamic search functionality for dog breeds using a SearchBar component
+ * - Pagination support for browsing large sets of dog data
+ * - Dog card display with favoriting functionality
+ * - Ability to view favorite dogs
+ * - Automatic fetching of dog breeds for search suggestions
+ *
+ * The component manages state for:
+ * - Current dog listings
+ * - Available dog breeds
+ * - Favorited dogs
+ * - Pagination state
+ * - Search queries
+ */
+
 import React, { useEffect, useState } from "react";
 import DogCard from "../../components/DogCard/DogCard.tsx";
 import SearchBar from "../../components/SearchBar/SearchBar.tsx";
 import { Dog } from "../../types/types";
 import styles from "./Search.module.css";
+import Pagination from "../../components/Pagination/Pagination.tsx";
 
 interface SearchQuery {
   key: string | null;
   value: string | null;
 }
 
+interface FetchDogsProps {
+  key?: string | null;
+  value?: string | null;
+  from?: number;
+}
+
 const Search = () => {
   const [dogs, setDogs] = useState<Dog[] | null>(null);
   const [dogBreeds, setDogBreeds] = useState<string[] | null>(null);
   const [favoriteDogs, setFavoriteDogs] = useState<string[]>([]);
+
+  const [keycount, setKeycount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
 
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({
     key: null,
@@ -36,7 +66,12 @@ const Search = () => {
     fetchDogBreeds();
   }, []);
 
-  const fetchDogs = async (key?: string, value?: string) => {
+  // Function for fetching dog ids & data
+  const fetchDogs = async ({
+    key = "breed",
+    value,
+    from = 1,
+  }: FetchDogsProps) => {
     try {
       let searchData;
       let searchParameters = "";
@@ -44,6 +79,7 @@ const Search = () => {
       if (key === "favorites") {
         if (favoriteDogs.length > 0) {
           searchData = favoriteDogs;
+          setKeycount(favoriteDogs.length);
         } else {
           setDogs(null);
         }
@@ -54,14 +90,16 @@ const Search = () => {
           setSearchQuery({ key, value: searchValue });
         }
         const response = await fetch(
-          `https://frontend-take-home-service.fetch.com/dogs/search?size=50&sort=breed:asc${searchParameters}`,
+          `https://frontend-take-home-service.fetch.com/dogs/search?size=${itemsPerPage}&sort=breed:asc${searchParameters}&from=${from}`,
           {
             method: "GET",
             credentials: "include",
           }
         );
         const results = await response.json();
-        searchData = results.resultIds;
+        const { resultIds, total } = results;
+        searchData = resultIds;
+        setKeycount(total);
       }
 
       if (searchData && searchData.length > 0) {
@@ -85,14 +123,17 @@ const Search = () => {
     }
   };
 
+  // Fetch initial batch of dogs (ascending by breed)
   useEffect(() => {
-    fetchDogs("breed");
+    fetchDogs({});
   }, []);
 
+  // Handle when a search selection is made
   const handleSearchSelection = (key?: string, value?: string) => {
-    fetchDogs(key, value);
+    fetchDogs({ key, value });
   };
 
+  // Handle favoriting dog card
   const handleOnFavorite = (id: string, remove: boolean) => {
     if (!remove) {
       setFavoriteDogs((prev) => {
@@ -107,6 +148,13 @@ const Search = () => {
     }
   };
 
+  // Fetch new dogs when page number is changed
+  const handlePageChange = (newPage: number) => {
+    const from = itemsPerPage * (newPage - 1);
+    fetchDogs({ from });
+    setCurrentPage(newPage);
+  };
+
   return (
     <div>
       <SearchBar
@@ -114,6 +162,14 @@ const Search = () => {
         searchKeys={dogBreeds}
         onSearchSelection={handleSearchSelection}
       />
+
+      <Pagination
+        keycount={keycount}
+        page={currentPage}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+      />
+
       <div className={styles.dogGalleryContainer}>
         <div className={styles.dogGallery}>
           {dogs?.map((dog) => {
@@ -128,6 +184,14 @@ const Search = () => {
           })}
         </div>
       </div>
+      {dogs && dogs.length > 20 && (
+        <Pagination
+          keycount={keycount}
+          page={currentPage}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };

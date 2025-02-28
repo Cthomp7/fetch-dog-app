@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Fuse, { FuseResult, IFuseOptions } from "fuse.js";
 import styles from "./SearchBar.module.css";
 
@@ -21,8 +21,10 @@ const SearchBar = <T,>({
   const [searchResult, setSearchResult] = useState<FuseResult<T>[] | null>(
     null
   );
+  const [showResults, setShowResults] = useState(false);
   const [fuseInstance, setFuseInstance] = useState<Fuse<T>>();
   const [favoritesMode, setFavoritesMode] = useState<boolean>(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   // Intialize Fuse
   useEffect(() => {
@@ -35,13 +37,40 @@ const SearchBar = <T,>({
     }
   }, [data, searchKeys, fuseOptions]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
 
     if (fuseInstance && query) {
       const results = fuseInstance.search(query);
-      if (results) setSearchResult(results);
+      if (results) {
+        setSearchResult(results);
+        setShowResults(true);
+      }
+    } else {
+      setSearchResult(null);
+    }
+  };
+
+  const handleFocus = () => {
+    if (searchResult) {
+      setShowResults(true);
     }
   };
 
@@ -62,39 +91,24 @@ const SearchBar = <T,>({
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "10px",
-        margin: "20px auto",
-        position: "relative",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
+    <div className={styles.container}>
+      <div className={styles.imgContainer}>
         <img
           src="/fetch-dog-app/svg/search.svg"
           alt="Search"
-          style={{
-            width: "30px",
-            height: "30px",
-          }}
+          className={styles.searchIcon}
         />
       </div>
-      <div className={styles.searchBarContainer}>
+      <div className={styles.searchBarContainer} ref={searchContainerRef}>
         <input
           type="text"
           value={searchQuery}
           onChange={handleSearch}
+          onFocus={handleFocus}
           placeholder="Search by breed..."
           className={styles.searchBar}
         />
-        {searchResult && (
+        {searchResult && showResults && (
           <div className={styles.searchResults}>
             {searchResult.map((result) => {
               return (

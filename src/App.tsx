@@ -6,7 +6,7 @@ import "./global.css";
 
 const App = () => {
   return (
-    <Router basename="/fetch-dog-app/">
+    <Router basename="/fetch-dog-app">
       <div>
         <Routes>
           <Route path="/" element={<Home />} />

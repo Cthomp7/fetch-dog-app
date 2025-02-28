@@ -1,0 +1,56 @@
+.container {
+  align-items: center;
+  display: flex;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+.pageButton, .arrowButton, .dots {
+  border: none;
+  border-radius: 10px;
+  aspect-ratio: 1 / 1;
+  margin: 0 5px;
+  padding: 8px 12px;
+  text-align: center;
+  width: 45px;
+  cursor: pointer;
+}
+
+.pageButton:hover:not(.activePage), .arrowButton:hover:not(.arrowButton[disabled]) {
+  background-color: #FFE9B6;
+  transition: ease-in-out .25s;
+}
+
+.dots:hover {
+  color: gray;
+  cursor: pointer;
+}
+
+.activePage {
+  font-weight: bold;
+  background-color: var(--orange-paloma);
+  color: white;
+}
+
+.arrowButton[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes activePage {
+  0% {
+    transform: scale(125%);
+  }
+  50% {
+    transform: scale(100%);
+  }
+} 
+
+@keyframes deactivePage {
+  0% {
+    transform: scale(100%);
+  }
+  50% {
+    transform: scale(125%);
+  }
+} 
