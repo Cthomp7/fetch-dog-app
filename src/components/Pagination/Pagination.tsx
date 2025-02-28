@@ -15,17 +15,20 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [middleStart, setMiddleStart] = useState(0); // Keeps track of the middle 5 items
 
+  // Calculate pages state
   useEffect(() => {
     const totalPages = Math.ceil(keycount / itemsPerPage);
     const pageArray = Array.from({ length: totalPages }, (_, i) => i + 1);
     setPages(pageArray);
   }, [keycount, itemsPerPage]);
 
+  // Handle a page option being selected
   const handlePageClick = (page: number) => {
     setCurrentPage(page);
     onPageChange(page);
   };
 
+  // Change page to next option (by 1)
   const handleNext = () => {
     if (currentPage < pages.length) {
       setCurrentPage(currentPage + 1);
@@ -33,6 +36,7 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     }
   };
 
+  // Change page to previous option (by 1)
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -40,6 +44,7 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     }
   };
 
+  // Don't show middle options if at the start or end
   useEffect(() => {
     if (currentPage > 4 && currentPage < pages.length - 3) {
       setShowMiddle(true);
@@ -49,6 +54,7 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     }
   }, [currentPage, pages]);
 
+  // Handling the next 5 middle page options
   const handleMiddleNext = () => {
     const totalPages = pages.length;
     const newMiddleStart = middleStart + 5;
@@ -62,6 +68,7 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     }
   };
 
+  // Handling the previous 5 middle page options
   const handleMiddlePrevious = () => {
     const newMiddleStart = middleStart - 5;
 
@@ -74,12 +81,14 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     }
   };
 
+  // Conditionally display middle page options
   const handleShowMiddle = () => {
     setShowMiddle(true);
     setMiddleStart(Math.floor(pages.length / 2) - 2); // Start the middle pages in the center
     setHovered(false);
   };
 
+  // Rendering initial page options
   const renderInitialPages = (totalPages: number) => {
     return Array.from({ length: Math.min(4, totalPages) }, (_, i) => i + 1).map(
       (i) => (
@@ -96,6 +105,7 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     );
   };
 
+  // Rendering last 4 page options
   const renderLastPages = (totalPages: number) => {
     return Array.from({ length: 4 }, (_, i) => Math.max(totalPages - 3, 5) + i)
       .filter((i) => i <= totalPages)
@@ -112,6 +122,7 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
       ));
   };
 
+  // For rendering middle page options
   const renderMiddleSection = (totalPages: number) => {
     const elements = Array.from(
       { length: Math.min(5, totalPages - middleStart + 1) },
@@ -173,6 +184,7 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     return elements;
   };
 
+  // Function for rendering page options in appropriate format
   const renderPages = () => {
     const totalPages = pages.length;
 

@@ -12,12 +12,14 @@ const DogCard: React.FC<DogCardProps> = ({ dog, favorite, onFavorite }) => {
   const { id, name, breed, age, img, zip_code } = dog;
   const [favorited, setFavorited] = useState(favorite);
 
+  // Handle if a dog card is favorited
   const favoriteDog = () => {
     const favorite = !favorited;
     setFavorited(favorite);
     onFavorite(id, !favorite);
   };
 
+  // Generate age text based on age field
   const getAgeText = (age: number) => {
     if (age === 0) return "> 1 year";
     return `${age} ${age === 1 ? "year" : "years"}`;

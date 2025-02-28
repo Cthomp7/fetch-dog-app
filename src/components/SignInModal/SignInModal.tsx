@@ -16,6 +16,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
   const [name, setName] = useState("");
   const [error, setError] = useState("");
 
+  // Handle input fields after Sign In is selected
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !name) {
@@ -26,8 +27,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
     authenticateLogin(name, email);
   };
 
-  if (!isOpen) return null;
-
+  // Authenticate user with provided login info
   const authenticateLogin = async (name: string, email: string) => {
     const fetchAPI = "https://frontend-take-home-service.fetch.com/auth/login";
     try {

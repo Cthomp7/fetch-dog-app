@@ -75,6 +75,7 @@ const SearchBar = <T,>({
     }
   }, [mode]);
 
+  // Close results when clicking outside of the search bar 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -91,6 +92,7 @@ const SearchBar = <T,>({
     };
   }, []);
 
+  // Generate search results based on user input using fuse.js
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -106,12 +108,14 @@ const SearchBar = <T,>({
     }
   };
 
+  // Display search results if search bar is focused
   const handleFocus = () => {
     if (searchResult) {
       setShowResults(true);
     }
   };
 
+  // Handle search bar option being selected
   const handleOptionClick = (key?: string, value?: string) => {
     key = key || "breed";
     setSearchQuery("");
@@ -123,6 +127,7 @@ const SearchBar = <T,>({
     }
   };
 
+  // Handle "Favorites" button onClick action
   const handleOnClickFavorite = () => {
     setFavoritesMode(!favoritesMode);
     if (!favoritesMode) {
@@ -132,10 +137,12 @@ const SearchBar = <T,>({
     }
   };
 
+  // Handle sending onMatch message
   const handleOnClickMatch = () => {
     onMatch();
   };
 
+  // Handle changing sorting order from asc to desc
   const handleOnClickOrder = () => {
     const newOrder = order === "asc" ? "desc" : "asc";
     setOrder(newOrder);
