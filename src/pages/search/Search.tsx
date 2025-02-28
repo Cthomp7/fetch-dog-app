@@ -169,6 +169,9 @@ const Search = () => {
 
   return (
     <div>
+      <div className={styles.header}>
+        <span className={styles.pinkText}>Fetch</span> Your New Best Friend! 🐶
+      </div>
       <SearchBar
         data={dogBreeds}
         searchKeys={dogBreeds}
@@ -187,7 +190,7 @@ const Search = () => {
       )}
       {mode === "match" && dogs && (
         <p className={styles.title}>
-          Your Match is <span className={styles.dogName}>{dogs[0].name}!</span>
+          Your Match is <span className={styles.pinkText}>{dogs[0].name}!</span>
         </p>
       )}
       {mode === "favorites" && !dogs && (

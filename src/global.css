@@ -1,16 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 
 :root {
-  --lavender-blue: #7F94E3;
-  --light-periwinkle: #BBC4FB;
-  --water-leaf: #A4E8D9;
-  --pale-orange: #FFA656;
-  --puppy-sunshine: #ffBD16;
-  --pea-green: #DEC63E;
-
   --pink-punch: #F054A5;
   --hibiscus-pink: #B63276;
-  --orange-paloma: #FF9C2A;
   --violet-syrup: #7C89FB;
   --error-red: #ef4444;
 }

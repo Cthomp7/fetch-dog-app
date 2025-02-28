@@ -1,3 +1,19 @@
+.header {
+  background: white;
+  background: linear-gradient(
+    254deg,
+    rgba(240, 84, 165, 0.5) 0%,
+    rgba(250, 191, 55, 0.5) 33%,
+    rgba(203, 213, 56, 0.5) 63%,
+    rgba(124, 137, 251, 0.5) 100%
+  );
+  color: rgb(54, 54, 54);
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
 .dogGalleryContainer {
   width: 80vw;
   margin: 0 auto;
@@ -24,8 +40,8 @@
   margin: 1rem;
 }
 
-.dogName {
-  color: var(--pink-punch)
+.pinkText {
+  color: var(--pink-punch);
 }
 
 @media (max-width: 1644px) {

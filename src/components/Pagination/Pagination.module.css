@@ -5,7 +5,9 @@
   width: fit-content;
 }
 
-.pageButton, .arrowButton, .dots {
+.pageButton,
+.arrowButton,
+.dots {
   border: none;
   border-radius: 10px;
   aspect-ratio: 1 / 1;
@@ -16,9 +18,10 @@
   cursor: pointer;
 }
 
-.pageButton:hover:not(.activePage), .arrowButton:hover:not(.arrowButton[disabled]) {
-  background-color: #FFE9B6;
-  transition: ease-in-out .25s;
+.pageButton:hover:not(.activePage),
+.arrowButton:hover:not(.arrowButton[disabled]) {
+  background-color: #c0e1f4;
+  transition: ease-in-out 0.25s;
 }
 
 .dots:hover {
@@ -28,7 +31,7 @@
 
 .activePage {
   font-weight: bold;
-  background-color: var(--orange-paloma);
+  background-color: var(--violet-syrup);
   color: white;
 }
 
@@ -44,7 +47,7 @@
   50% {
     transform: scale(100%);
   }
-} 
+}
 
 @keyframes deactivePage {
   0% {
@@ -53,4 +56,4 @@
   50% {
     transform: scale(125%);
   }
-} 
+}
