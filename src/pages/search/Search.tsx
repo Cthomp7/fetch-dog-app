@@ -66,7 +66,6 @@ const Search = () => {
       order = order || pastOrder;
       let searchData;
       let searchParameters = "";
-      setMode(key || "breed");
 
       if (key === "match") {
         searchData = [value];
@@ -113,6 +112,7 @@ const Search = () => {
 
         const postData = await postResponse.json();
         setDogs(postData);
+        setMode(key || "breed");
       }
     } catch (error) {
       console.error("Error fetching dogs:", error);
