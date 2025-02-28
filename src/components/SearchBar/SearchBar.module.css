@@ -23,7 +23,7 @@
 .searchBar {
   padding: 10px 15px;
   font-size: 16px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--violet-syrup);
   border-radius: 25px;
   width: 300px;
   outline: none;
@@ -82,6 +82,17 @@
 .favoriteButtonActive {
   background-color: var(--pink-punch);
   color: white;
+}
+
+.matchButton {
+  cursor: pointer;
+  background-color: white;
+  color: var(--error-red);
+  border-radius: 1.5rem;
+  border: 2px solid var(--error-red);
+  padding: 0 0.9rem;
+  height: 100%;
+  font-weight: 600;
 }
 
 @keyframes bounce {

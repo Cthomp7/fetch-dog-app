@@ -40,6 +40,7 @@ const Search = () => {
   const [dogBreeds, setDogBreeds] = useState<string[] | null>(null);
   const [favoriteDogs, setFavoriteDogs] = useState<string[]>([]);
 
+  const [mode, setMode] = useState<string>("breed");
   const [keycount, setKeycount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
@@ -75,8 +76,12 @@ const Search = () => {
     try {
       let searchData;
       let searchParameters = "";
+      setMode(key || "breed");
 
-      if (key === "favorites") {
+      if (key === "match") {
+        searchData = [value];
+        setKeycount(1);
+      } else if (key === "favorites") {
         if (favoriteDogs.length > 0) {
           searchData = favoriteDogs;
           setKeycount(favoriteDogs.length);
@@ -142,7 +147,7 @@ const Search = () => {
         }
         return [...prev, id];
       });
-    } else {
+    } else if (mode === "favorites") {
       setFavoriteDogs((prev) => prev.filter((dogId) => dogId !== id));
       setDogs((prev) => (prev ? prev.filter((dog) => dog.id !== id) : null));
     }
@@ -155,24 +160,55 @@ const Search = () => {
     setCurrentPage(newPage);
   };
 
+  // fetch user's match based on favorited dogs ids
+  const findYourMatch = async () => {
+    if (!favoriteDogs || favoriteDogs.length > 0) {
+      const postResponse = await fetch(
+        "https://frontend-take-home-service.fetch.com/dogs/match",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(favoriteDogs),
+          credentials: "include",
+        }
+      );
+
+      const dog = await postResponse.json();
+      fetchDogs({ key: "match", value: dog.match });
+    }
+  };
+
   return (
     <div>
       <SearchBar
         data={dogBreeds}
         searchKeys={dogBreeds}
         onSearchSelection={handleSearchSelection}
+        onMatch={findYourMatch}
         favorites={favoriteDogs.length}
+        mode={mode}
       />
-
-      <Pagination
-        keycount={keycount}
-        page={currentPage}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-      />
-
+      {mode !== "match" && (
+        <Pagination
+          keycount={keycount}
+          page={currentPage}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+        />
+      )}
+      {mode === "match" && dogs && (
+        <p className={styles.matchTitle}>
+          Your Match is <span className={styles.dogName}>{dogs[0].name}!</span>
+        </p>
+      )}
       <div className={styles.dogGalleryContainer}>
-        <div className={styles.dogGallery}>
+        <div
+          className={`${styles.dogGallery} ${
+            mode === "match" ? styles.matchMode : ""
+          }`}
+        >
           {dogs?.map((dog) => {
             return (
               <DogCard

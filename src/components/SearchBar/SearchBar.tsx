@@ -7,15 +7,19 @@ interface SearchBarProps<T> {
   searchKeys?: string[] | null;
   fuseOptions?: IFuseOptions<T>;
   onSearchSelection: (key?: string, value?: string) => void;
+  onMatch: () => void;
   favorites: number;
+  mode: string;
 }
 
 const SearchBar = <T,>({
   data,
   searchKeys,
   onSearchSelection,
+  onMatch,
   fuseOptions,
   favorites,
+  mode,
 }: SearchBarProps<T>) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<FuseResult<T>[] | null>(
@@ -26,6 +30,7 @@ const SearchBar = <T,>({
   const [savedFavorites, setSavedFavorites] = useState<number>(0);
   const [favoritesMode, setFavoritesMode] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMatchButtonAnimating, setIsMatchButtonAnimating] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   // Intialize Fuse
@@ -40,15 +45,32 @@ const SearchBar = <T,>({
   }, [data, searchKeys, fuseOptions]);
 
   useEffect(() => {
-    if (favorites > Number(savedFavorites)) {
+    if (favorites > savedFavorites) {
       setIsAnimating(true);
       setSavedFavorites(favorites);
+    }
+  }, [favorites, savedFavorites]);
+
+  // Animation handling for Favorites button
+  useEffect(() => {
+    if (isAnimating) {
       const timer = setTimeout(() => {
         setIsAnimating(false);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [favorites, savedFavorites]);
+  }, [isAnimating]);
+
+  // Animation handling for Find your Match button
+  useEffect(() => {
+    if (mode === "favorites") {
+      setIsMatchButtonAnimating(true);
+      const timer = setTimeout(() => {
+        setIsMatchButtonAnimating(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [mode]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -94,13 +116,17 @@ const SearchBar = <T,>({
     onSearchSelection(key, value);
   };
 
-  const handleOnFavoriteClick = () => {
+  const handleOnClickFavorite = () => {
     setFavoritesMode(!favoritesMode);
     if (!favoritesMode) {
       handleOptionClick("favorites");
     } else {
       handleOptionClick();
     }
+  };
+
+  const handleOnClickMatch = () => {
+    onMatch();
   };
 
   return (
@@ -121,7 +147,7 @@ const SearchBar = <T,>({
           placeholder="Search by breed..."
           className={styles.searchBar}
         />
-        {searchResult && showResults && (
+        {searchResult && searchResult.length > 1 && showResults && (
           <div className={styles.searchResults}>
             {searchResult.map((result) => {
               return (
@@ -143,7 +169,7 @@ const SearchBar = <T,>({
         className={`${styles.favoriteButton} ${
           favoritesMode ? styles.favoriteButtonActive : ""
         } ${isAnimating ? styles.bounce : ""}`}
-        onClick={handleOnFavoriteClick}
+        onClick={handleOnClickFavorite}
       >
         <img
           src={
@@ -156,6 +182,18 @@ const SearchBar = <T,>({
         />{" "}
         Favorites
       </button>
+      {mode === "favorites" && (
+        <div className={styles.matchContainer}>
+          <button
+            className={`${styles.matchButton} ${
+              isMatchButtonAnimating ? styles.bounce : ""
+            }`}
+            onClick={handleOnClickMatch}
+          >
+            ♥️ Find your Match!
+          </button>
+        </div>
+      )}
     </div>
   );
 };
