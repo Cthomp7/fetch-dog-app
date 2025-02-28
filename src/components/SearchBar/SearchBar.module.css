@@ -108,3 +108,22 @@
 .bounce {
   animation: bounce 0.3s ease;
 }
+
+.arrowBubble {
+  cursor: pointer;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--violet-syrup);
+  border-radius: 50%;
+  border: none;
+  padding: 6px;
+  width: 43px;
+}
+
+.arrowIcon {
+  width: 25px;
+  height: 100%;
+  filter: brightness(0) invert(1);
+}

@@ -7,6 +7,7 @@ interface SearchBarProps<T> {
   searchKeys?: string[] | null;
   fuseOptions?: IFuseOptions<T>;
   onSearchSelection: (key?: string, value?: string) => void;
+  onOrderChange: (order: string) => void;
   onMatch: () => void;
   favorites: number;
   mode: string;
@@ -16,6 +17,7 @@ const SearchBar = <T,>({
   data,
   searchKeys,
   onSearchSelection,
+  onOrderChange,
   onMatch,
   fuseOptions,
   favorites,
@@ -27,6 +29,7 @@ const SearchBar = <T,>({
   );
   const [showResults, setShowResults] = useState(false);
   const [fuseInstance, setFuseInstance] = useState<Fuse<T>>();
+  const [order, setOrder] = useState("asc"); //desc
   const [savedFavorites, setSavedFavorites] = useState<number>(0);
   const [favoritesMode, setFavoritesMode] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -134,6 +137,12 @@ const SearchBar = <T,>({
     onMatch();
   };
 
+  const handleOnClickOrder = () => {
+    const newOrder = order === "asc" ? "desc" : "asc";
+    setOrder(newOrder);
+    onOrderChange(newOrder);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
@@ -170,6 +179,23 @@ const SearchBar = <T,>({
           </div>
         )}
       </div>
+      {mode === "breed" && (
+        <button className={styles.arrowBubble} onClick={handleOnClickOrder}>
+          {order === "asc" ? (
+            <img
+              src="/fetch-dog-app/svg/a-arrow-up.svg"
+              alt="arrow"
+              className={styles.arrowIcon}
+            />
+          ) : (
+            <img
+              src="/fetch-dog-app/svg/a-arrow-down.svg"
+              alt="arrow"
+              className={styles.arrowIcon}
+            />
+          )}
+        </button>
+      )}
       <button
         className={`${styles.favoriteButton} ${
           favoritesMode ? styles.favoriteButtonActive : ""

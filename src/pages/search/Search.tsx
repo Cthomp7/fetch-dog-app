@@ -14,6 +14,7 @@ interface FetchDogsProps {
   key?: string | null;
   value?: string | null;
   from?: number;
+  order?: string;
 }
 
 const Search = () => {
@@ -22,6 +23,7 @@ const Search = () => {
   const [favoriteDogs, setFavoriteDogs] = useState<string[]>([]);
 
   const [mode, setMode] = useState<string>("breed");
+  const [pastOrder, setPastOrder] = useState<string>("asc");
   const [keycount, setKeycount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
@@ -58,8 +60,10 @@ const Search = () => {
     key = "breed",
     value,
     from = 1,
+    order,
   }: FetchDogsProps) => {
     try {
+      order = order || pastOrder;
       let searchData;
       let searchParameters = "";
       setMode(key || "breed");
@@ -82,7 +86,7 @@ const Search = () => {
           setSearchQuery({ key, value: searchValue });
         }
         const response = await fetch(
-          `https://frontend-take-home-service.fetch.com/dogs/search?size=${itemsPerPage}&sort=breed:asc${searchParameters}&from=${from}`,
+          `https://frontend-take-home-service.fetch.com/dogs/search?size=${itemsPerPage}&sort=breed:${order}${searchParameters}&from=${from}`,
           {
             method: "GET",
             credentials: "include",
@@ -140,11 +144,23 @@ const Search = () => {
     }
   };
 
+  const calculateFrom = (newPage?: number) => {
+    newPage = newPage || currentPage;
+    return itemsPerPage * (newPage - 1);
+  };
+
   // Fetch new dogs when page number is changed
   const handlePageChange = (newPage: number) => {
-    const from = itemsPerPage * (newPage - 1);
+    const from = calculateFrom(newPage);
     fetchDogs({ key: mode, from });
     setCurrentPage(newPage);
+  };
+
+  // Handle order (asc/desc) change
+  const handleOrderChange = (order: string) => {
+    const from = calculateFrom();
+    setPastOrder(order);
+    fetchDogs({ from, order });
   };
 
   // fetch user's match based on favorited dogs ids
@@ -176,6 +192,7 @@ const Search = () => {
         data={dogBreeds}
         searchKeys={dogBreeds}
         onSearchSelection={handleSearchSelection}
+        onOrderChange={handleOrderChange}
         onMatch={findYourMatch}
         favorites={favoriteDogs.length}
         mode={mode}
