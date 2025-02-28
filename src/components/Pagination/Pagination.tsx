@@ -22,6 +22,11 @@ const Pagination = ({ keycount, page, itemsPerPage, onPageChange }: Props) => {
     setPages(pageArray);
   }, [keycount, itemsPerPage]);
 
+  // If page prop state has changed, update Pagination currentPage state
+  useEffect(() => {
+    setCurrentPage(page);
+  }, [page]);
+
   // Handle a page option being selected
   const handlePageClick = (page: number) => {
     setCurrentPage(page);

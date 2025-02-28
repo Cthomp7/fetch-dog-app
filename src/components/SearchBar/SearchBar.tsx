@@ -75,7 +75,7 @@ const SearchBar = <T,>({
     }
   }, [mode]);
 
-  // Close results when clicking outside of the search bar 
+  // Close results when clicking outside of the search bar
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -129,8 +129,9 @@ const SearchBar = <T,>({
 
   // Handle "Favorites" button onClick action
   const handleOnClickFavorite = () => {
-    setFavoritesMode(!favoritesMode);
-    if (!favoritesMode) {
+    const active = !favoritesMode
+    setFavoritesMode(active);
+    if (active) {
       handleOptionClick("favorites");
     } else {
       handleOptionClick();
@@ -139,6 +140,7 @@ const SearchBar = <T,>({
 
   // Handle sending onMatch message
   const handleOnClickMatch = () => {
+    setFavoritesMode(false);
     onMatch();
   };
 

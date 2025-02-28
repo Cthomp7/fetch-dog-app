@@ -143,9 +143,10 @@ const Search = () => {
         }
         return [...prev, id];
       });
-    } else if (mode === "favorites") {
+    } else {
       setFavoriteDogs((prev) => prev.filter((dogId) => dogId !== id));
-      setDogs((prev) => (prev ? prev.filter((dog) => dog.id !== id) : null));
+      if (mode === "favorites")
+        setDogs((prev) => (prev ? prev.filter((dog) => dog.id !== id) : null));
     }
   };
 
