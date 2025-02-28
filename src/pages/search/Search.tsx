@@ -1,22 +1,3 @@
-/**
- * Search Page Component
- *
- * This page provides a searchable interface for browsing and managing dog listings.
- * Key features include:
- * - Dynamic search functionality for dog breeds using a SearchBar component
- * - Pagination support for browsing large sets of dog data
- * - Dog card display with favoriting functionality
- * - Ability to view favorite dogs
- * - Automatic fetching of dog breeds for search suggestions
- *
- * The component manages state for:
- * - Current dog listings
- * - Available dog breeds
- * - Favorited dogs
- * - Pagination state
- * - Search queries
- */
-
 import React, { useEffect, useState } from "react";
 import DogCard from "../../components/DogCard/DogCard.tsx";
 import SearchBar from "../../components/SearchBar/SearchBar.tsx";
@@ -53,16 +34,21 @@ const Search = () => {
   // Fetch dog breeds for fuse.js search bar
   useEffect(() => {
     const fetchDogBreeds = async () => {
-      const response = await fetch(
-        "https://frontend-take-home-service.fetch.com/dogs/breeds",
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
+      try {
+        const response = await fetch(
+          "https://frontend-take-home-service.fetch.com/dogs/breeds",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
-      const dogBreeds = await response.json();
-      setDogBreeds(dogBreeds);
+        const dogBreeds = await response.json();
+        setDogBreeds(dogBreeds);
+      } catch (error) {
+        // redirect to sign-in page on fail
+        window.location.href = `${window.location.origin}/fetch-dog-app`;
+      }
     };
     fetchDogBreeds();
   }, []);
@@ -87,6 +73,7 @@ const Search = () => {
           setKeycount(favoriteDogs.length);
         } else {
           setDogs(null);
+          setKeycount(0);
         }
       } else if (key === "breed") {
         const searchValue = value || searchQuery.value;
@@ -156,7 +143,7 @@ const Search = () => {
   // Fetch new dogs when page number is changed
   const handlePageChange = (newPage: number) => {
     const from = itemsPerPage * (newPage - 1);
-    fetchDogs({ from });
+    fetchDogs({ key: mode, from });
     setCurrentPage(newPage);
   };
 
@@ -190,7 +177,7 @@ const Search = () => {
         favorites={favoriteDogs.length}
         mode={mode}
       />
-      {mode !== "match" && (
+      {mode !== "match" && dogs && dogs.length > 1 && (
         <Pagination
           keycount={keycount}
           page={currentPage}
@@ -199,9 +186,12 @@ const Search = () => {
         />
       )}
       {mode === "match" && dogs && (
-        <p className={styles.matchTitle}>
+        <p className={styles.title}>
           Your Match is <span className={styles.dogName}>{dogs[0].name}!</span>
         </p>
+      )}
+      {mode === "favorites" && !dogs && (
+        <p className={styles.title}>☝️ You haven't favorited any dogs yet!</p>
       )}
       <div className={styles.dogGalleryContainer}>
         <div

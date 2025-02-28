@@ -44,6 +44,7 @@ const SearchBar = <T,>({
     }
   }, [data, searchKeys, fuseOptions]);
 
+  // Animation handling for Favorites button
   useEffect(() => {
     if (favorites > savedFavorites) {
       setIsAnimating(true);
@@ -51,7 +52,7 @@ const SearchBar = <T,>({
     }
   }, [favorites, savedFavorites]);
 
-  // Animation handling for Favorites button
+  // Animation timer
   useEffect(() => {
     if (isAnimating) {
       const timer = setTimeout(() => {
@@ -114,6 +115,10 @@ const SearchBar = <T,>({
     setSearchQuery("");
     setSearchResult(null);
     onSearchSelection(key, value);
+
+    if (favoritesMode) {
+      setFavoritesMode(!favoritesMode);
+    }
   };
 
   const handleOnClickFavorite = () => {
@@ -182,7 +187,7 @@ const SearchBar = <T,>({
         />{" "}
         Favorites
       </button>
-      {mode === "favorites" && (
+      {mode === "favorites" && favorites > 0 && (
         <div className={styles.matchContainer}>
           <button
             className={`${styles.matchButton} ${
