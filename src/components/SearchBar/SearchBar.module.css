@@ -1,0 +1,67 @@
+.searchBarContainer {
+  position: relative;
+}
+
+.searchBar {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  width: 300px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 1rem;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 300px;
+  max-height: 350px;
+  overflow-y: scroll;
+  z-index: 2;
+}
+
+.searchResult {
+  cursor: pointer;
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+  transition: 0.1s;
+  border: none;
+  background-color: white;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.searchResult:hover {
+  background-color: #c0e1f4;
+}
+
+.favoriteButton {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  border: solid 2px var(--pink-punch);
+  color: var(--pink-punch);
+  border-radius: 1.5rem;
+  padding: 0.7rem 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.favoriteButtonActive {
+  background-color: var(--pink-punch);
+  color: white;
+}

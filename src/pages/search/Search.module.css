@@ -1,0 +1,39 @@
+.dogGalleryContainer {
+  width: 80vw;
+  margin: 0 auto;
+}
+
+.dogGallery {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+@media (max-width: 1644px) {
+  .dogGallery {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1310px) {
+  .dogGalleryContainer {
+    width: 90vw;
+  }
+  .dogGallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 880px) {
+  .dogGallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 574px) {
+  .dogGallery {
+    grid-template-columns: 1fr;
+  }
+}

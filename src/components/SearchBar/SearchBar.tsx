@@ -1,80 +1,130 @@
 import React, { useState, useEffect } from "react";
-import Fuse from 'fuse.js';
+import Fuse, { FuseResult, IFuseOptions } from "fuse.js";
+import styles from "./SearchBar.module.css";
 
 interface SearchBarProps<T> {
-  data: T[];
-  searchKeys: string[];
+  data: T[] | null;
+  searchKeys?: string[] | null;
   onSearchResult?: (results: T[]) => void;
-  fuseOptions?: Fuse.IFuseOptions<T>;
+  fuseOptions?: IFuseOptions<T>;
+  onSearchSelection: (key?: string, value?: string) => void;
 }
 
-const SearchBar = <T,>({ 
-  data, 
-  searchKeys, 
-  onSearchResult, 
-  fuseOptions 
+const SearchBar = <T,>({
+  data,
+  searchKeys,
+  onSearchResult,
+  onSearchSelection,
+  fuseOptions,
 }: SearchBarProps<T>) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResult, setSearchResult] = useState<FuseResult<T>[] | null>(
+    null
+  );
   const [fuseInstance, setFuseInstance] = useState<Fuse<T>>();
+  const [favoritesMode, setFavoritesMode] = useState<boolean>(false);
 
+  // Intialize Fuse
   useEffect(() => {
-    // Initialize Fuse instance with default options
-    const defaultOptions = {
-      keys: searchKeys,
-      threshold: 0.3,
-      ...fuseOptions
-    };
-    setFuseInstance(new Fuse(data, defaultOptions));
+    if (data) {
+      const defaultOptions = {
+        includeScore: true,
+        threshold: 0.3,
+      };
+      setFuseInstance(new Fuse(data, defaultOptions));
+    }
   }, [data, searchKeys, fuseOptions]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    
+
     if (fuseInstance && query) {
-      const results = fuseInstance.search(query).map(result => result.item);
-      onSearchResult?.(results);
+      const results = fuseInstance.search(query);
+      if (results) setSearchResult(results);
+    }
+  };
+
+  const handleOptionClick = (key?: string, value?: string) => {
+    key = key || "breed";
+    setSearchQuery("");
+    setSearchResult(null);
+    onSearchSelection(key, value);
+  };
+
+  const handleOnFavoriteClick = () => {
+    setFavoritesMode(!favoritesMode);
+    if (!favoritesMode) {
+      handleOptionClick("favorites");
     } else {
-      onSearchResult?.(data);
+      handleOptionClick();
     }
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      gap: "10px",
-      margin: '20px auto',
-      position: 'relative',
-    }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-      }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "10px",
+        margin: "20px auto",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <img
           src="/svg/search.svg"
           alt="Search"
           style={{
-            width: '20px',
-            height: '20px',
+            width: "30px",
+            height: "30px",
           }}
         />
       </div>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={handleSearch}
-        placeholder="Search..."
-        style={{
-          padding: '10px 15px',
-          fontSize: '16px',
-          border: '2px solid #ddd',
-          borderRadius: '25px',
-          width: '300px',
-          outline: 'none',
-          transition: 'border-color 0.2s ease',
-        }}
-      />
+      <div className={styles.searchBarContainer}>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearch}
+          placeholder="Search by breed..."
+          className={styles.searchBar}
+        />
+        {searchResult && (
+          <div className={styles.searchResults}>
+            {searchResult.map((result) => {
+              return (
+                <button
+                  key={String(result.item)}
+                  className={styles.searchResult}
+                  onClick={() =>
+                    handleOptionClick("breed", String(result.item))
+                  }
+                >
+                  {String(result.item)}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      <button
+        className={`${styles.favoriteButton} ${
+          favoritesMode ? styles.favoriteButtonActive : ""
+        }`}
+        onClick={handleOnFavoriteClick}
+      >
+        <img
+          src={favoritesMode ? "/svg/heart.svg" : "/svg/heart-filled.svg"}
+          alt="heart"
+          className={styles.heart}
+        />{" "}
+        Favorites
+      </button>
     </div>
   );
 };

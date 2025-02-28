@@ -1,32 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./DogCard.module.css";
+import { Dog } from "../../types/types";
 
 interface DogCardProps {
-  name?: string;
-  breed?: string;
-  age?: string;
+  dog: Dog;
+  favorite: boolean;
+  onFavorite: (id: string, remove: boolean) => void;
 }
 
-const DogCard: React.FC<DogCardProps> = ({
-  name = "Max",
-  breed = "Golden Retriever",
-  age = "2 years",
-}) => {
+const DogCard: React.FC<DogCardProps> = ({ dog, favorite, onFavorite }) => {
+  const { id, name, breed, age, img, zip_code } = dog;
+  const [favorited, setFavorited] = useState(favorite);
+
+  const favoriteDog = () => {
+    const favorite = !favorited;
+    setFavorited(favorite);
+    onFavorite(id, !favorite);
+  };
+
+  const getAgeText = (age: number) => {
+    if (age === 0) return "> 1 year";
+    return `${age} ${age === 1 ? "year" : "years"}`;
+  };
+
   return (
-    <div className={styles.cardContainer}>
+    <button
+      className={styles.cardContainer}
+      onClick={favoriteDog}
+      aria-label={`${favorite ? "Remove" : "Add"} ${name} to favorites`}
+    >
       <div className={styles.card}>
-        <img
-          className={styles.image}
-          src="https://images.unsplash.com/photo-1507146426996-ef05306b995a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHVwcHklMjBkb2d8ZW58MHx8MHx8fDA%3D"
-          alt="dog"
-        />
+        <img className={styles.image} src={img} alt="dog" />
         <div className={styles.overlay}>
           <h2 className={styles.name}>{name}</h2>
-          <p className={styles.info}>Breed: {breed}</p>
-          <p className={styles.info}>Age: {age}</p>
+          <p className={styles.info}>{breed}</p>
+          <div className={styles.subInfoContainer}>
+            <p className={styles.info}>{getAgeText(age)} old</p>
+            <div className={styles.zipContainer}>
+              <img
+                src="/svg/map-pin.svg"
+                alt="map pin"
+                className={styles.mapPin}
+              />
+              <p className={styles.zip}>{zip_code}</p>
+            </div>
+          </div>
         </div>
+        {favorited ? (
+          <img
+            src="/svg/heart-filled.svg"
+            alt="heart"
+            className={styles.heart}
+            style={{ opacity: 1 }}
+          />
+        ) : (
+          <img src="/svg/heart.svg" alt="heart" className={styles.heart} />
+        )}
       </div>
-    </div>
+    </button>
   );
 };
 
