@@ -5,17 +5,17 @@ import styles from "./SearchBar.module.css";
 interface SearchBarProps<T> {
   data: T[] | null;
   searchKeys?: string[] | null;
-  onSearchResult?: (results: T[]) => void;
   fuseOptions?: IFuseOptions<T>;
   onSearchSelection: (key?: string, value?: string) => void;
+  favorites: number;
 }
 
 const SearchBar = <T,>({
   data,
   searchKeys,
-  onSearchResult,
   onSearchSelection,
   fuseOptions,
+  favorites,
 }: SearchBarProps<T>) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<FuseResult<T>[] | null>(
@@ -23,7 +23,9 @@ const SearchBar = <T,>({
   );
   const [showResults, setShowResults] = useState(false);
   const [fuseInstance, setFuseInstance] = useState<Fuse<T>>();
+  const [savedFavorites, setSavedFavorites] = useState<number>(0);
   const [favoritesMode, setFavoritesMode] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   // Intialize Fuse
@@ -36,6 +38,17 @@ const SearchBar = <T,>({
       setFuseInstance(new Fuse(data, defaultOptions));
     }
   }, [data, searchKeys, fuseOptions]);
+
+  useEffect(() => {
+    if (favorites > Number(savedFavorites)) {
+      setIsAnimating(true);
+      setSavedFavorites(favorites);
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [favorites, savedFavorites]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -129,7 +142,7 @@ const SearchBar = <T,>({
       <button
         className={`${styles.favoriteButton} ${
           favoritesMode ? styles.favoriteButtonActive : ""
-        }`}
+        } ${isAnimating ? styles.bounce : ""}`}
         onClick={handleOnFavoriteClick}
       >
         <img

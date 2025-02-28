@@ -161,6 +161,7 @@ const Search = () => {
         data={dogBreeds}
         searchKeys={dogBreeds}
         onSearchSelection={handleSearchSelection}
+        favorites={favoriteDogs.length}
       />
 
       <Pagination
